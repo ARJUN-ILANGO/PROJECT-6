@@ -1,0 +1,154 @@
+var leftBoundry = createSprite(12,192,5,420);
+leftBoundry.shapeColor="white";
+var rightBoundry = createSprite(388,192,5,420);
+rightBoundry.shapeColor="white";
+var topBoundry = createSprite(193,12,420,5);
+topBoundry.shapeColor="white";
+var bottomBoundry = createSprite(200,387,420,5);
+bottomBoundry.shapeColor="white";
+var bottomline = createSprite(195,272,420,5);
+bottomline.shapeColor="white";
+var topline = createSprite(195,121,420,5);
+topline.shapeColor="white";
+var playergoal = createSprite(200,28,100,20);
+playergoal.shapeColor="yellow";
+var compgoal = createSprite(200,372,100,20);
+compgoal.shapeColor="yellow";
+var stricker = createSprite(200,200,10,10);
+stricker.shapeColor="red";
+var computerMallet = createSprite(200,50,50,10);
+computerMallet.shapeColor="black";
+var playerMallet = createSprite(200,350,50,10);
+playerMallet.shapeColor="black";
+
+var playerscore=0;
+var compscore=0;
+var gameState = "serve";
+
+
+function draw() {
+  background("green");
+  createEdgeSprites();
+
+  
+  stricker.bounceOff(topBoundry);
+  stricker.bounceOff(bottomBoundry);
+  stricker.bounceOff(leftBoundry);
+  stricker.bounceOff(rightBoundry);
+  stricker.bounceOff(playerMallet);
+  stricker.bounceOff(computerMallet);
+  stricker.bounciness=0.5;
+  
+  playerMallet.bounceOff(edges);
+  playerMallet.bounceOff(bottomBoundry);
+  playerMallet.bounceOff(rightBoundry);
+  playerMallet.bounceOff(leftBoundry);
+  playerMallet.bounceOff(edges);
+  textSize(30);
+  text(playerscore,22,236);
+  
+
+  computerMallet.bounceOff(topBoundry);
+  computerMallet.bounceOff(leftBoundry); 
+  computerMallet.bounceOff(rightBoundry);
+  textSize(30);
+  text(compscore,30,166);
+    
+  computerMallet.x = stricker.x;
+
+ 
+  for (var i=0;i<400;i=i+20){
+    line(i,200,i+10,200);
+    
+  }
+  
+  if (keyDown("left")){
+   playerMallet.x=playerMallet.x-5;
+ }
+ 
+ if (keyDown("right")){
+    playerMallet.x=playerMallet.x+5; 
+   
+ }
+ 
+ if (keyDown("up")){
+playerMallet.y=playerMallet.y-5;
+}
+   
+  if (keyDown("down")){
+   playerMallet.y =playerMallet.y+5; 
+    
+  } 
+   
+    if (playerMallet.y<200){
+     playerMallet.y=playerMallet.y+10;
+    }
+  
+  
+  if (stricker.y>400||stricker.x>400||stricker.x<0||stricker.y<0){
+    stricker.x=200;
+    stricker.y=200;
+  }
+  
+  
+  if ( gameState === "serve") {
+     textSize(25);
+     text("PRESS SPACE TO SERVE",61,103);
+  }
+   if (keyDown("space") && gameState === "serve") {
+    serve();
+    gameState = "play";
+  }
+  
+  if (compscore===1||playerscore===1){
+    playerMallet.velocityY=0;
+    playerMallet.velocityX=0;
+    computerMallet.velocityY=0;
+    computerMallet.velocityX=0;
+    stricker.velocityY=0;
+    stricker.velocityX=0;
+    text("GAME OVER ",90,150);
+    text("PRESS r TO RESET",86,227);
+    textSize(15);
+    
+    gameState="over";
+    
+  }
+  
+  if (keyDown("r")&& gameState==="over"){
+    gameState = "serve";
+    compscore=0;
+    playerscore=0;
+    // serve(); 
+    
+    computerMallet.x=200;
+    computerMallet.y=50;
+    playerMallet.x=200;
+    playerMallet.y=350;
+    reset();
+    
+  }
+   
+   if (stricker.isTouching(compgoal)){
+         compscore = compscore+1;
+         reset();
+       }
+  if (stricker.isTouching(playergoal)){
+    playerscore = playerscore+1;
+    reset();
+  }
+
+  drawSprites();
+}
+
+function serve(){
+  stricker.velocityX=3;
+  stricker.velocityY=4;
+}
+
+function reset(){
+  stricker.x=200;
+  stricker.y=200;
+  stricker.velocityY=0;
+  stricker.velocityY=0;
+}
